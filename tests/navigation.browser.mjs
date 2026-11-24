@@ -7,12 +7,12 @@ import { extname, join, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
 
 // Run against a running dev server, static preview, or deployed project site.
-// ROLLFORM_TEST_URL=http://localhost:3000/ npm run test:navigation
+// ABRAXDICE_TEST_URL=http://localhost:3000/ npm run test:navigation
 async function localBase(t) {
   const root = resolve('out');
   assert.ok(existsSync(join(root, 'index.html')), 'Run npm run build before the browser test');
   const html = readFileSync(join(root, 'index.html'), 'utf8');
-  const basePath = html.includes('/rollform/_next/') ? '/rollform' : '';
+  const basePath = html.includes('/abraxdice/_next/') ? '/abraxdice' : '';
   const types = {
     '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
     '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml',
@@ -63,8 +63,8 @@ test('CI static export preserves the original site without the removed lab', { s
 });
 
 test('page motion and navigation', { timeout: 180000 }, async t => {
-  const base = process.env.ROLLFORM_TEST_URL || await localBase(t);
-  const profile = mkdtempSync(join(tmpdir(), 'rollform-navigation-'));
+  const base = process.env.ABRAXDICE_TEST_URL || await localBase(t);
+  const profile = mkdtempSync(join(tmpdir(), 'abraxdice-navigation-'));
   const browser = spawn(executable, [
     ...(process.env.DISPLAY ? ['--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] : ['--headless=new']),
     '--remote-debugging-port=0', '--user-data-dir=' + profile,
@@ -146,6 +146,24 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
     await send('Emulation.setEmulatedMedia', {
       features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }],
     });
+    await t.test('Cookie notice fits mobile, links to policy and stays dismissed after reload', async () => {
+      await send('Emulation.setDeviceMetricsOverride', { width: 320, height: 640, deviceScaleFactor: 1, mobile: true });
+      await send('Page.navigate', { url: base });
+      await until('!!document.querySelector(".cookie-banner")');
+      const fits = await evaluate(`(() => {
+        const r = document.querySelector('.cookie-banner').getBoundingClientRect();
+        return r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight;
+      })()`);
+      assert.ok(fits);
+      await clickVisible('.cookie-banner a');
+      await until('location.pathname.includes("/cookies") && !!document.querySelector(".cookie-banner button")');
+      await clickVisible('.cookie-banner button');
+      await until('!document.querySelector(".cookie-banner")');
+      await send('Page.reload');
+      await until('document.readyState === "complete"');
+      await delay(800);
+      assert.equal(await evaluate('!!document.querySelector(".cookie-banner")'), false);
+    });
     // Protect the responsive Hero and real, directly loadable links.
     for (const [width, mobile] of [[320, true], [390, true], [430, true], [768, true], [900, false], [1024, false], [1440, false]]) {
       await t.test(`Hero at ${width}px`, async () => {
@@ -188,7 +206,12 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
               'Desktop CTA keeps its compact width');
           }
           if (width === 390 || width === 1440) {
-            await until(`!!document.querySelector('.hero-object .dice-canvas')`);
+            await until(`!!document.querySelector('.hero-object .dice-canvas') && !document.querySelector('.hero-slider-controls button').disabled`);
+            const firstSlide = await evaluate(`document.querySelector('.hero-slider-controls span').textContent`);
+            await clickVisible('.hero-slider-controls button:last-child', mobile);
+            await until(`document.querySelector('.hero-slider-controls span').textContent !== ${JSON.stringify(firstSlide)}`);
+            await clickVisible('.hero-slider-controls button:first-child', mobile);
+            await until(`document.querySelector('.hero-slider-controls span').textContent === ${JSON.stringify(firstSlide)}`);
             // Center the target before sending CDP pointer input on the emulated phone.
             if (mobile) await evaluate(`document.querySelector('.hero-copy .button').scrollIntoView({ block: 'center', behavior: 'instant' })`);
             await clickVisible('.hero-copy .button', mobile);
@@ -207,7 +230,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
         const home = new URL(theme, base).href;
         await send('Page.navigate', { url: home });
         await until(`document.readyState === 'complete' && !!document.querySelector('.hero-copy .button')`);
-        await evaluate(`localStorage.removeItem('rollform:last-config:v1')`);
+        await evaluate(`localStorage.removeItem('abraxdice:last-config:v1')`);
         await evaluate(`document.querySelector('.hero-copy .button').click()`);
         await until(`location.pathname.endsWith('/configure/') &&
           ['shape', 'shell', 'font'].every(k => new URLSearchParams(location.search).has(k))`);
@@ -284,16 +307,25 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
       assert.equal(await evaluate(`document.querySelectorAll('${breadcrumb}').length`), 0);
     });
     for (const theme of ['']) {
-      await t.test('light-only review, catalog count, random color and 3D interaction', async () => {
+      await t.test('theme persistence, catalog count, random color and 3D interaction', async () => {
         await send('Emulation.setDeviceMetricsOverride', {width:1440,height:1100,deviceScaleFactor:1,mobile:false});
         await send('Page.navigate', {url:new URL('catalog/',base).href});
         await until(`document.readyState === 'complete' && !!document.querySelector('.product-grid')`);
         await delay(150);
         await evaluate(`scrollTo(0,100)`);
-        await evaluate(`localStorage.setItem('rollform:theme','dark')`);
+        await evaluate(`localStorage.removeItem('abraxdice:theme')`);
         await send('Page.reload');
-        await until(`document.readyState === 'complete' && document.querySelector('.site').dataset.theme === 'light'`);
-        assert.equal(await evaluate(`!!document.querySelector('.theme-toggle')`),false,'Theme control is absent');
+        await until(`document.readyState === 'complete' && document.documentElement.dataset.theme === 'dark'`);
+        await evaluate(`scrollTo(0,100)`);
+        await until(`!!document.querySelector('.theme-toggle')`);
+        await evaluate(`document.querySelector('.theme-toggle').click()`);
+        await until(`document.documentElement.dataset.theme === 'light'`);
+        assert.equal(await evaluate(`localStorage.getItem('abraxdice:theme')`), 'light');
+        await send('Page.reload');
+        await until(`document.readyState === 'complete' && document.documentElement.dataset.theme === 'light'`);
+        await evaluate(`document.querySelector('.theme-toggle').click()`);
+        await until(`document.documentElement.dataset.theme === 'dark'`);
+        assert.equal(await evaluate(`localStorage.getItem('abraxdice:theme')`), 'dark');
         assert.equal(await evaluate(`location.pathname.includes('/dark')`),false);
         for (const width of [320,390,430,768,1024,1440]) {
           await send('Emulation.setDeviceMetricsOverride',{width,height:1100,deviceScaleFactor:1,mobile:false});
@@ -326,10 +358,10 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
           `Вариант 01: добавлено в корзину, теперь ${beforeBurst + 3}`,
           'Rapid clicks must announce the committed quantity, not stale render state');
         // Seed a valid persisted full cart; 110 synthetic clicks in one event are not a user flow.
-        await until(`JSON.parse(localStorage.getItem('rollform:demo-cart:v3') || '[]')
+        await until(`JSON.parse(localStorage.getItem('abraxdice:demo-cart:v3') || '[]')
           .some(line => line.origin?.presetId === 'demo-1' && line.quantity === ${beforeBurst + 3})`);
         await evaluate(`(() => {
-          const key = 'rollform:demo-cart:v3';
+          const key = 'abraxdice:demo-cart:v3';
           const saved = JSON.parse(localStorage.getItem(key));
           saved.find(line => line.origin?.presetId === 'demo-1').quantity = 99;
           localStorage.setItem(key, JSON.stringify(saved));
@@ -340,7 +372,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
         await until(`document.querySelector('.product-grid [role="status"]')?.textContent.includes('максимум 99')`);
         assert.equal(await evaluate(`Number(document.querySelector('.product-grid .product-add-count')?.textContent)`), 99,
           'Limit must not increment the persisted count');
-        await evaluate(`localStorage.removeItem('rollform:demo-cart:v3')`);
+        await evaluate(`localStorage.removeItem('abraxdice:demo-cart:v3')`);
         await send('Page.reload');
         await until(`!document.querySelector('.product-grid .product-add-count')`);
         await send('Page.navigate',{url:new URL('configure/',base).href});
@@ -532,7 +564,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
         for (const width of [320, 390, 768, 1440]) {
           await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
           await send('Page.navigate', { url: new URL(theme, base).href });
-          await until(`document.readyState === 'complete' && !!document.querySelector('.order-steps')`);
+          await until(`document.readyState !== 'loading' && !!document.querySelector('.order-steps')`);
           assert.equal(await evaluate(`document.querySelectorAll('.order-steps > li').length`), 4);
           assert.equal(await evaluate(`!!(document.querySelector('.bento-section').compareDocumentPosition(document.querySelector('#about')) & Node.DOCUMENT_POSITION_FOLLOWING)`), true);
           assert.equal(await evaluate(`document.querySelectorAll('.bento-card').length`), 5);
@@ -570,7 +602,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
           await send('Page.navigate', { url: configure.href });
           await until(`document.readyState === 'complete' && !!document.querySelector('.configure-controls')`);
           await delay(150);
-          await evaluate(`localStorage.removeItem('rollform:demo-cart:v3')`);
+          await evaluate(`localStorage.removeItem('abraxdice:demo-cart:v3')`);
           await send('Page.reload');
           await until(`document.readyState === 'complete' && !!document.querySelector('.configure-controls')`);
           await delay(150);
@@ -616,6 +648,9 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
           await until(`document.querySelector('.quantity span').textContent === '1'`);
           await send('Page.reload');
           await until(`document.querySelector('.quantity span')?.textContent === '1'`);
+          assert.equal(await evaluate(`document.querySelector('.cart-summary .button').disabled`), true);
+          await evaluate(`document.querySelector('.cart-consent input').click()`);
+          await until(`!document.querySelector('.cart-summary .button').disabled`);
           await evaluate(`document.querySelector('.cart-summary .button').click()`);
           await until(`location.hash === '#contact-form' && !!document.querySelector('#contact-form')`);
           assert.ok((await evaluate('location.pathname')).endsWith(theme + 'contacts/'), 'Checkout retains theme');
@@ -677,7 +712,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
           await until(`!!document.querySelector('.empty-state')`);
           await send('Page.reload');
           await until(`document.readyState === 'complete' && !!document.querySelector('.empty-state')`);
-          assert.equal(await evaluate(`JSON.parse(localStorage.getItem('rollform:demo-cart:v3')).length`), 0, 'Deletion persists');
+          assert.equal(await evaluate(`JSON.parse(localStorage.getItem('abraxdice:demo-cart:v3')).length`), 0, 'Deletion persists');
           if (width === 390) {
             // Two additions in one JavaScript turn must not validate against a stale React closure.
             await send('Page.navigate', { url: new URL(theme + 'configure/', base).href });
@@ -703,7 +738,7 @@ test('page motion and navigation', { timeout: 180000 }, async t => {
             await send('Page.navigate', { url: new URL(theme + 'cart/', base).href });
             await until(`!!document.querySelector('.cart-entry')`);
             assert.equal(await evaluate(`document.querySelector('.quantity button:last-child').disabled`), true);
-            await evaluate(`document.querySelector('.cart-summary button').click()`);
+            await evaluate(`document.querySelector('.cart-summary .button-secondary').click()`);
             await until(`!!document.querySelector('.empty-state')`);
             // Storage is optional; a denied write must not prevent an in-memory add.
             await send('Page.navigate', { url: new URL(theme + 'configure/', base).href });

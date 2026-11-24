@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCart } from './CartState';
 import Breadcrumbs from './Breadcrumbs';
@@ -15,6 +17,8 @@ const describe = (item: CartItem) =>
 
 export default function CartView() {
   const { items, change, remove, clear } = useCart();
+  const router = useRouter();
+  const [consent, setConsent] = useState(false);
   const total = items.reduce((sum, item) => sum + priceForCartItem(item) * item.quantity, 0);
   return <section className="wrapper section page-section cart-page stack">
     <Breadcrumbs current="Корзина" />
@@ -63,8 +67,12 @@ export default function CartView() {
           <h2>Итого</h2>
           <p className="cart-total">{formatPrice(total)}</p>
           <Link href="/production">Изготовление и доставка</Link>
-          <Link href="/contacts#contact-form" className="button button-black">Оформить заказ</Link>
-          <button type="button" className="button button-secondary" onClick={clear}>
+          <div className="cart-consent">
+            <label><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> Даю согласие на обработку персональных данных</label>
+            <Link href="/consent">Текст согласия (проект)</Link>
+          </div>
+          <button type="button" className="button button-black" disabled={!consent} onClick={() => { if (consent) router.push('/contacts#contact-form'); }}>Оформить заказ</button>
+          <button type="button" className="button button-secondary" onClick={() => { clear(); setConsent(false); }}>
             <Trash2 className="icon" aria-hidden="true" /><span>Очистить корзину</span>
           </button>
         </div>

@@ -17,7 +17,7 @@ test('no fabricated cookie-consent/legal UI blocks the storefront', () => {
 test('the cart persists only after user selection, without tracking scripts', () => {
   const state = read('src/components/CartState.tsx');
   const shell = read('src/components/SiteShell.tsx');
-  assert.match(state, /localStorage\.getItem/);
+  assert.match(state, /readBrandStorage\(CART_KEY\)/);
   assert.match(state, /localStorage\.setItem/);
   assert.ok(shell.includes('<Link href={"/cart"} className="cart-shortcut"'));
   assert.ok(shell.includes('{count > 0 && <span className="cart-count"'));

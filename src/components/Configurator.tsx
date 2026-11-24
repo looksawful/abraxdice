@@ -1,5 +1,7 @@
 'use client';
 
+import { readBrandStorage } from '@/lib/browserStorage';
+
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
@@ -26,7 +28,7 @@ export default function Configurator() {
         return;
       }
       if (!query) {
-        const saved = readSavedDice(localStorage.getItem(LAST_DICE_KEY));
+        const saved = readSavedDice(readBrandStorage(LAST_DICE_KEY));
         if (saved) window.history.replaceState(null, '', `?${diceQuery(saved)}`);
       } else {
         localStorage.setItem(LAST_DICE_KEY, diceQuery(configFromParams(new URLSearchParams(query))));

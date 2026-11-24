@@ -125,6 +125,11 @@
     pointer-events: none;
   }
   .hero-centered .dice-canvas { transform: scale(1.08); }
+  .hero-slider-controls { position: absolute; z-index: 2; inset-inline: 0; inset-block-end: 0.5rem; display: flex; align-items: center; justify-content: center; gap: var(--space-2); pointer-events: auto; font-size: var(--fs-small); }
+  .hero-slider-controls button { display: grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; border: 1px solid var(--color-control-border); border-radius: var(--radius-full); background: var(--color-background); color: var(--color-text); }
+  .hero-slider-controls span { min-inline-size: 7rem; text-align: center; }
+  .abraxdice-mascot { display: block; inline-size: 8rem; block-size: auto; }
+  :root[data-theme="light"] .abraxdice-mascot { filter: brightness(0); }
   .hero-centered .hero-copy {
     position: relative;
     z-index: 1;
@@ -154,10 +159,8 @@
     min-inline-size: 12rem;
     margin-block-start: auto;
   }
-  .site[data-theme="dark"] .hero-centered .hero-object {
-    filter: invert(1);
-  }
   @media (width <= 56rem) {
+    .hero-centered .hero-object { inset: clamp(14rem, 30svh, 19rem) 0 clamp(5rem, 10svh, 7rem); }
     .hero-centered .hero-copy .button {
       inline-size: 100%;
       max-inline-size: 100%;

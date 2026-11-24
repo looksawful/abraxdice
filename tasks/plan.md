@@ -1,7 +1,7 @@
-# ROLLFORM · План UX и дизайн-системы для прототипа
-Дата: 2026-11-08 · Статус: **предлагается к реализации после просмотра** · Трекер: looksawful/rollform-internal #5 и текущая задача Asana.
+# abraxdice · План UX и дизайн-системы для прототипа
+Дата: 2026-11-08 · Статус: **предлагается к реализации после просмотра** · Трекер: looksawful/abraxdice-internal #5 и текущая задача Asana.
 
-Связанные документы: [исследование шести дизайн-систем](../docs/research/rollform-design-system-benchmark-2026-11-08.md) · [AGENTS](../AGENTS.md) · [README](../README.md).
+Связанные документы: [исследование шести дизайн-систем](../docs/research/abraxdice-design-system-benchmark-2026-11-08.md) · [AGENTS](../AGENTS.md) · [README](../README.md).
 
 ## 0. Цель и ограничения
 
@@ -147,7 +147,7 @@
 ### RF-14 · Регрессионная приёмка и handoff (P0 для каждого выпуска, S)
 **Зачем:** не путать зелёный тест и опубликованный сайт.
 **Изменить:** не UI, а процесс. Каждый пакет: `npm test`, `npm run typecheck`, `npm run build`, `npm run test:navigation`; при неустойчивом Linux full motion — фиксировать #15 как проблему, не замалчивать и не отключать проверки. Публикация только в `main` через GitHub Actions/Pages; проверить public HTML/assets, после deploy smoke и скрины. Лог в существующем #5 и комментарий в общей Asana.
-**Приёмка:** ссылки на commit, CI, публичную проверку и оставшиеся дефекты; сохранён пользовательский незакоммиченный каталог `rollform-dev`.
+**Приёмка:** ссылки на commit, CI, публичную проверку и оставшиеся дефекты; сохранены пользовательские незакоммиченные изменения.
 **Зависимости:** обязательная после каждого функционального slice. **Трекер:** #5, #15.
 
 ## 4. Релизные пакеты и контрольные точки
@@ -188,7 +188,7 @@
 
 ## 7. Техническая политика и проверка
 
-Стек: Next.js 16, React 19, TypeScript, Three.js, GSAP, Lucide; существующий `src/styles/*.css`. Команды из `package.json`: `npm ci` (для чистой копии), `npm test`, `npm run typecheck`, `npm run build`, `npm run test:navigation` или `npm run verify`. Браузерная проверка после деплоя на https://looksawful.github.io/rollform/. Стиль: минимальные существующие TSX + CSS классы, без новой JS-state машины, Tailwind, Material UI, Carbon/Gravity или «второй» библиотеки токенов.
+Стек: Next.js 16, React 19, TypeScript, Three.js, GSAP, Lucide; существующий `src/styles/*.css`. Команды из `package.json`: `npm ci` (для чистой копии), `npm test`, `npm run typecheck`, `npm run build`, `npm run test:navigation` или `npm run verify`. Браузерная проверка после деплоя на https://looksawful.github.io/abraxdice/. Стиль: минимальные существующие TSX + CSS классы, без новой JS-state машины, Tailwind, Material UI, Carbon/Gravity или «второй» библиотеки токенов.
 
 **Разрешено:** поправить доступность/стили/обратную связь, добавить минимальные регрессионные тесты, точечный документ компонентов.
 **Требует отдельного решения:** новые маркетинговые тексты, смена общей айдентики, новые дизайн-библиотеки/Storybook, реальные статусы товара, настоящее оформление заказа.

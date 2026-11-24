@@ -1,4 +1,4 @@
-name: Publish ROLLFORM demo
+name: Publish abraxdice demo
 on:
   push:
     branches: [main]
@@ -27,7 +27,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /rollform
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
       - run: xvfb-run -a npm run test:navigation
       # GitHub Pages caches HTML for 600s, but old hashed assets vanish after deployment.
       # Keep recent assets so previously cached HTML can still hydrate.
@@ -35,9 +35,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .pages-chunks
-          key: rollform-static-${{ github.sha }}
+          key: abraxdice-static-${{ github.sha }}
           restore-keys: |
-            rollform-static-
+            abraxdice-static-
       - name: Retain assets referenced by cached HTML
         run: |
           mkdir -p .pages-chunks
@@ -48,7 +48,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: .pages-chunks
-          key: rollform-static-${{ github.sha }}
+          key: abraxdice-static-${{ github.sha }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

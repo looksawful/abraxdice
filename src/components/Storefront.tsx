@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box } from 'lucide-react';
+import { Box, ChevronLeft, ChevronRight } from 'lucide-react';
 import DiceViewer from './DiceViewer';
 import ProductGallery from './ProductGallery';
 import ProductionInfo from './ProductionInfo';
@@ -11,20 +11,32 @@ import ContactContent from './ContactContent';
 import BentoSection from './BentoSection';
 import DeliveryInfo from './DeliveryInfo';
 import ScrollProgress from './ScrollProgress';
-import { diceQuery, randomDiceConfig, randomHeroDiceConfig } from '@/lib/catalog';
+import { diceQuery, randomDiceConfig, randomHeroDiceConfig, shellColors } from '@/lib/catalog';
 import type { DiceConfig } from '@/lib/catalog';
 
 export default function Storefront() {
   const router = useRouter();
   const [heroConfig, setHeroConfig] = useState<DiceConfig | null>(null);
   useEffect(() => { setHeroConfig(randomHeroDiceConfig()); }, []);
+  const moveHero = (direction: number) => setHeroConfig(current => {
+    if (!current) return null;
+    const index = shellColors.findIndex(color => color.value === current.shell);
+    return { ...current, shell: shellColors[(index + direction + shellColors.length) % shellColors.length].value };
+  });
   const createRandomDice = () => router.push(`/configure?${diceQuery(randomDiceConfig())}`);
   return <>
     <section className="wrapper hero hero-centered" aria-labelledby="hero-title">
-      <div className="hero-object">{heroConfig && <DiceViewer config={heroConfig} continuous />}</div>
+      <div className="hero-object" role="region" aria-roledescription="слайдер" aria-label="Варианты кубиков">
+        {heroConfig && <DiceViewer config={heroConfig} continuous />}
+        <div className="hero-slider-controls">
+          <button type="button" aria-label="Предыдущий кубик" disabled={!heroConfig} onClick={() => moveHero(-1)}><ChevronLeft className="icon" aria-hidden="true" /></button>
+          <span aria-live="polite">{heroConfig ? shellColors.find(color => color.value === heroConfig.shell)?.name : 'Загрузка'}</span>
+          <button type="button" aria-label="Следующий кубик" disabled={!heroConfig} onClick={() => moveHero(1)}><ChevronRight className="icon" aria-hidden="true" /></button>
+        </div>
+      </div>
       <div className="hero-copy stack">
-        <h1 id="hero-title">Заголовок</h1>
-        <p>Здесь появится рассказ о кубиках и возможностях конструктора. Пока этот текст помогает оценить длину строк, отступы и композицию первого экрана рядом с 3D-моделью. Окончательное описание добавим после согласования содержания.</p>
+        <h1 id="hero-title">Магазин авторских кубов </h1>
+        <p>Хотите вдохнуть жизнь в ваше приключение? </p>
         <button type="button" className="button button-black" onClick={createRandomDice}><span>Создать случайный кубик</span><Box className="icon" aria-hidden="true" /></button>
       </div>
     </section>
@@ -71,6 +83,7 @@ export default function Storefront() {
         </figcaption>
       </figure>
       <div className="editorial-copy prose">
+        <img className="abraxdice-mascot" src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/brand/abraxdice-mascot.svg`} width={160} height={160} alt="Маскот abraxdice" loading="lazy" />
         <h2 className="section-title">О нас</h2>
         <p>В этом разделе будет история проекта: как появилась идея и что определяет характер коллекции. Пока мы используем временный текст, чтобы проверить ритм длинного абзаца и сочетание с фотографиями. После утверждения содержания он будет заменён полноценным описанием.</p>
       </div>

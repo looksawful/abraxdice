@@ -24,7 +24,7 @@ test('Russian typography uses semantic type sizes, line heights and a readable m
   assert.match(base, /line-height:\s*var\(--lh-body\)/);
   assert.match(base, /font-kerning:\s*normal/);
   assert.match(base, /letter-spacing:\s*normal/);
-  assert.match(src('src/app/layout.tsx'), /<html lang="ru">/);
+  assert.match(src('src/app/layout.tsx'), /<html lang="ru"(?:\s[^>]*)?>/);
 });
 
 test('display, headings, cards and interactive text reuse their semantic roles', () => {
@@ -34,7 +34,7 @@ test('display, headings, cards and interactive text reuse their semantic roles',
   assert.match(pages, /\.section-title\s*\{[^}]*font-size:\s*var\(--fs-heading\)/);
   assert.match(pages, /\.bento-card h3\s*\{[^}]*font-size:\s*var\(--fs-title\)/);
   assert.match(pages, /\.product-copy h3\s*\{[^}]*font-size:\s*var\(--fs-title\)/);
-  assert.match(component, /\.nav\s*\{[^}]*font-size:\s*var\(--fs-small\)/);
+  assert.match(component, /\.nav\s*\{[^}]*font-size:\s*var\(--fs-body\)/);
   assert.match(component, /\.button\s*\{[^}]*font-size:\s*var\(--fs-small\)/);
   assert.match(pages, /\.option-list/);
 });

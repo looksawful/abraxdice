@@ -134,7 +134,7 @@ test('neutral surface palette and translucent dividers are central CSS tokens', 
   assert.match(tokens, /--color-surface: #ffffff/);
   assert.match(tokens, /--color-border: rgb\(0 0 0 \/ 0\.1[24]\)/);
   assert.match(tokens, /--shadow-card:/);
-  assert.match(tokens, /\.site\[data-theme="dark"\][^}]*--color-border: rgb\(255 255 255 \/ 0\.1[46]\)/);
+  assert.match(tokens, /:root\s*\{[^}]*--color-border: rgb\(255 255 255 \/ 0\.1[46]\)/);
   assert.match(pages, /\.product\s*\{[^}]*box-shadow: var\(--shadow-card\)/);
 });
 

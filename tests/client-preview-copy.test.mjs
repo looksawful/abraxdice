@@ -104,7 +104,7 @@ test('contact icons remain semantic but demo details are not links', () => {
 test('Hero, About and FAQ placeholders use full paragraphs', () => {
   const home = read('src/components/Storefront.tsx');
   assert.doesNotMatch(home, /Внимание! Этот текст является рыбой!/);
-  assert.match(home, /<h1 id="hero-title">[^<]+<\/h1>\s*<p>[^<]+\.[^<]+\.[^<]+\.<\/p>/);
+  assert.match(home, /<h1 id="hero-title">Магазин авторских кубов\s*<\/h1>\s*<p>Хотите вдохнуть жизнь в ваше приключение\?\s*<\/p>/);
   assert.match(home, /<h2 className="section-title">О нас<\/h2>\s*<p>[^<]+\.[^<]+\.[^<]+\.<\/p>/);
   assert.match(home, /<summary>\{question\}<\/summary>\s*<p>[^<]+\.[^<]+\.[^<]+\.<\/p>/);
 });

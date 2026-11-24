@@ -25,7 +25,7 @@ export default function ScrollProgress() {
           x: () => track.clientWidth - cube.clientWidth,
           rotation: 720, transformOrigin: '50% 50%', ease: 'none',
           scrollTrigger: {
-            id: 'rollform-scroll-progress', start: 0, end: 'max',
+            id: 'abraxdice-scroll-progress', start: 0, end: 'max',
             scrub: 0.25, invalidateOnRefresh: true,
           },
         });

@@ -1,4 +1,4 @@
-# ROLLFORM · Дизайн-система (RF-01 / RF-02)
+# abraxdice · Дизайн-система (RF-01 / RF-02)
 
 > Актуально для исходников `main` на 8 ноября 2026 года. **Источник истины — CSS и TSX**, а не этот документ. Здесь нет новых токенов или новых компонентов. Прототип не принимает оплату и заявки.
 
@@ -22,19 +22,19 @@
 | Горизонтальный отступ | `--gutter` | clamp(1.25rem, 3.5vw, 4.5rem) |
 | Контейнер / длина строки | `--content-max` / `--measure` | 80rem / 62ch |
 | Максимум сетки каталога | `--collection-max` | 72rem (уже основного контейнера) |
-| Высота шапки | `--header-height` | 5.25rem |
+| Высота шапки | `--header-height` | 6rem |
 | Скругления | `--radius-sm/md/lg/full` | 0.75rem / 1rem / 1.75rem / 999px |
 | Шаги расстояний | `--space-1/2/3` | 0.5rem / 1rem / 1.5rem |
 | Крупные расстояния | `--space-4/5` | clamp(1.5rem, 3vw, 3.5rem) / clamp(3rem, 5.5vw, 6rem) |
 | Контрастные примитивы | `--color-black/white` | #000000 / #ffffff |
-| Фон сайта / текст / поверхность | `--color-background/text/surface` | #fafafa / #000000 / #ffffff (в светлой `.site`) |
-| Обводка | `--color-border` / `--border-default` | rgb(0 0 0 / 0.14) / 1px solid var(--color-border) |
-| Тень | `--shadow-card` | 0 8px 24px rgb(0 0 0 / 0.035) |
+| Фон сайта / текст / поверхность | `--color-background/text/surface` | #151515 / #ffffff / #202020 (тёмная по умолчанию); #fafafa / #000000 / #ffffff (светлая) |
+| Обводка | `--color-border` / `--border-default` | rgb(255 255 255 / 0.16) (тёмная), rgb(0 0 0 / 0.14) (светлая) / 1px solid var(--color-border) |
+| Тень | `--shadow-card` | 0 8px 24px rgb(0 0 0 / 0.12) (тёмная), 0 8px 24px rgb(0 0 0 / 0.035) (светлая) |
 | Акцентное действие | `--color-action/on-action` | var(--color-text) / var(--color-background) |
 | Фокус | `--color-focus` | var(--color-text) |
 | Фон 3D / надпись | `--color-preview/preview-ink/dice-label` | белый / чёрный / белый |
 
-`.site[data-theme="dark"]` содержит сохранённые альтернативные значения, **но переключатель темы сейчас отключён** по решению проекта. Не активировать его в этом пакете. Размеры в rem привязаны к настройке пользователя; при базовых 16px 0.875rem = 14px.
+`html[data-theme="dark"]` — основная тема с 24.11.2026; светлая тема доступна через существующий ручной переключатель. Сохраняется выбор пользователя. Темизация не должна менять физические цвета кубиков. Размеры в rem привязаны к настройке пользователя; при базовых 16px 0.875rem = 14px.
 
 ## 3. Повторяемые компоновочные паттерны
 
@@ -81,9 +81,9 @@
 
 **RF-02:** существующие токены, `.stack`, `.cluster`, `.wrapper`, `.grid`, `.prose` и общий `:focus-visible` уже присутствуют. Изолированная инвентаризация не выявила необходимости переписывать глобальные значения или Hero. Визуальная унификация конкретных карточек/форм/мобильного конструктора выполняется в RF-03…RF-11, а не повторяется здесь.
 
-**Граница приёмки:** реестр подтверждён чтением исходников и браузерной проверкой восьми маршрутов на 320/390/768/1440. Скриншоты, результаты проверки клавиатурного фокуса, точные команды, проверенная SHA и оставшиеся ограничения хранятся в [Issue №5](https://github.com/looksawful/rollform-internal/issues/5), а не в этом нормативном документе. Это не заменяет проверку визуального обрезания контура, 200% zoom, контраста, реального touch и NVDA/VoiceOver. `npm test`, `npm run typecheck`, `npm run build`, `npm run test:navigation` остаются обязательными после изменений кода.
+**Граница приёмки:** реестр подтверждён чтением исходников и браузерной проверкой восьми маршрутов на 320/390/768/1440. Скриншоты, результаты проверки клавиатурного фокуса, точные команды, проверенная SHA и оставшиеся ограничения хранятся в [Issue №5](https://github.com/looksawful/abraxdice-internal/issues/5), а не в этом нормативном документе. Это не заменяет проверку визуального обрезания контура, 200% zoom, контраста, реального touch и NVDA/VoiceOver. `npm test`, `npm run typecheck`, `npm run build`, `npm run test:navigation` остаются обязательными после изменений кода.
 
-История выполнения и QA — в [issue #5](https://github.com/looksawful/rollform-internal/issues/5) и Asana, без дополнительного журнала в README.
+История выполнения и QA — в [issue #5](https://github.com/looksawful/abraxdice-internal/issues/5) и Asana, без дополнительного журнала в README.
 
 ## 7. Карта экранов и реальные владельцы контрактов
 
@@ -140,7 +140,7 @@
 
 ## 9. Воспроизводимая проверка для последующих исполнителей
 
-Работать в **чистой отдельной копии**. Не использовать и не очищать `A:\Users\awful\Downloads\rollform-dev`. Локальная проверенная независимая копия на Titan в этом цикле: `A:\_rollform_rf01_20261108`; перед новой работой сверить `git remote -v`, `git status --short`, `git fetch origin` и текущий `origin/main`. Источником истины всегда остаётся актуальный main, а не снимок 8 ноября.
+Работать в существующей рабочей копии main на Titan, не создавать новые копии. Перед изменениями сверить git remote, git status и актуальный origin/main. Исторические пути не считать рабочими.
 
 ```sh
 npm ci
@@ -150,13 +150,13 @@ npm run build
 npm run test:navigation
 ```
 
-Для smoke опубликованного Pages, **после** успешного deployment, тест также поддерживает `ROLLFORM_TEST_URL=https://looksawful.github.io/rollform/`. В Windows cmd: `set ROLLFORM_TEST_URL=https://looksawful.github.io/rollform/&& npm run test:navigation`; в PowerShell задавать `$env:ROLLFORM_TEST_URL`. Команды локального и публичного теста не считать взаимозаменяемыми.
+Для smoke опубликованного Pages, **после** успешного deployment, тест также поддерживает `ABRAXDICE_TEST_URL=https://looksawful.github.io/abraxdice/`. В Windows cmd: `set ABRAXDICE_TEST_URL=https://looksawful.github.io/abraxdice/&& npm run test:navigation`; в PowerShell задавать `$env:ABRAXDICE_TEST_URL`. Команды локального и публичного теста не считать взаимозаменяемыми.
 
 **Минимальная браузерная матрица для каждого изменившего UI пакета**: 8 маршрутов из `7` × 320/390/768/1440 CSS px, дополнительно 430 px для мобильных карточек; проверять количество H1, общий `document.documentElement.scrollWidth <= clientWidth + 1`, JS-исключения, `:focus-visible` при Tab, целевые подписи и реальные размеры элементов. Для элементов под overlay и `overflow:hidden` отдельно проверить, не обрезается ли outline. Проверять только **применимые** состояния из `8`, не делать 9 искусственных variants на каждый элемент.
 
 Проверка Tab на **первом** интерактивном элементе каждого экрана не заменяет полный keyboard walkthrough. Отдельно пройти путь каталог → товар → конструктор → корзина → контакты, открыть/закрыть меню и Lightbox, проверить `aria-pressed`, предельное количество, `required`, fallback 3D, `prefers-reduced-motion`. Настоящие NVDA/VoiceOver, физический touch, 200% zoom и контраст отдельных узлов нельзя объявлять пройденными по одному headless smoke.
 
-**Материалы доказательства**: commit SHA, конкретные npm exit codes / количество тестов, run ID и jobs GitHub Actions, ссылка на опубликованный Pages, размеры viewport и фактические браузерные наблюдения. Эти *оперативные журналы* фиксируются в существующем [Issue №5](https://github.com/looksawful/rollform-internal/issues/5) и задаче Asana `1220167763227563`; не создавать вторую историю запусков в `DESIGN.md` или `README.md`.
+**Материалы доказательства**: commit SHA, конкретные npm exit codes / количество тестов, run ID и jobs GitHub Actions, ссылка на опубликованный Pages, размеры viewport и фактические браузерные наблюдения. Эти *оперативные журналы* фиксируются в существующем [Issue №5](https://github.com/looksawful/abraxdice-internal/issues/5) и задаче Asana `1220167763227563`; не создавать вторую историю запусков в `DESIGN.md` или `README.md`.
 
 ## 10. Разделение ответственности, чтобы другие пакеты не блокировались
 

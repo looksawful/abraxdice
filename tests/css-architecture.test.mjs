@@ -109,8 +109,8 @@ test('copy stays generic while contact form is clearly marked as non-sending', (
   const content = home + cart + builder + read('src/components/SiteShell.tsx') +
     read('src/components/ProductCard.tsx') + read('src/app/catalog/page.tsx') +
     read('src/app/contacts/page.tsx');
-  assert.match(home, />Заголовок<\/h1>/);
-  assert.match(home, /Здесь появится рассказ о кубиках и возможностях конструктора/);
+  assert.match(home, />Магазин авторских кубов\s*<\/h1>/);
+  assert.match(home, /Хотите вдохнуть жизнь в ваше приключение/);
   assert.match(home, />Создать случайный кубик<\/span>/);
   assert.match(builder, /<span>В корзину<\/span><ShoppingBag/);
   assert.doesNotMatch(cart, /makeOrderText|clipboard|textarea|order-draft/);
@@ -123,8 +123,8 @@ test('approved vector mark replaces the brand placeholder', () => {
   assert.match(shell, /className="logo-mark"/);
   assert.doesNotMatch(shell, />Лого<\/Link>/);
   assert.match(shell, /aria-label="На главную"/);
-  assert.match(layout, /ROLLFORM/);
-  assert.match(layout, /title: 'ROLLFORM \| Кубики'/);
+  assert.match(layout, /abraxdice/);
+  assert.match(layout, /title: 'abraxdice \| Кубики'/);
 });
 
 test('desktop header reveals after scroll and mobile navigation is in flow, with conditional cart count', () => {
@@ -164,22 +164,22 @@ test('monochrome design tokens separate primitive colors from semantic roles', (
   for (const role of ['background', 'surface', 'text', 'border', 'action', 'on-action', 'focus', 'preview']) {
     assert.match(tokens, new RegExp('--color-' + role + ':'));
   }
-  assert.match(tokens, /\.site\s*\{[^}]*--color-background:\s*#fafafa/);
-  assert.match(tokens, /\.site\s*\{[^}]*--color-text:\s*var\(--color-black\)/);
+  assert.match(tokens, /:root\[data-theme="light"\]\s*\{[^}]*--color-background:\s*#fafafa/);
+  assert.match(tokens, /:root\[data-theme="light"\]\s*\{[^}]*--color-text:\s*var\(--color-black\)/);
   const hexes = [...tokens.matchAll(/#[a-f0-9]{3,8}\b/gi)].map(x => x[0].toLowerCase());
   assert.deepEqual(new Set(hexes), new Set(['#000000', '#ffffff', '#fafafa', '#151515', '#202020']));
 });
 
-test('fixed light and dark route scopes control related variables without OS preference', () => {
+test('root theme controls related variables without OS preference', () => {
   const tokens = read('src/styles/tokens.css');
   const shell = read('src/components/SiteShell.tsx');
-  assert.match(tokens, /:root\s*\{[^}]*color-scheme:\s*light;/);
-  assert.match(tokens, /\.site\s*\{[^}]*color-scheme:\s*light;/);
-  assert.match(tokens, /\.site\[data-theme="dark"\]\s*\{\s*color-scheme:\s*dark;/);
-  assert.match(tokens, /\.site\[data-theme="dark"\]\s*\{[^}]*--color-background:\s*#151515/);
-  assert.match(tokens, /\.site\[data-theme="dark"\]\s*\{[^}]*--color-text:\s*var\(--color-white\)/);
-  assert.match(shell, /data-theme="light"/);
-  assert.doesNotMatch(shell, /className="theme-toggle"/);
+  const layout = read('src/app/layout.tsx');
+  assert.match(tokens, /:root\s*\{[^}]*color-scheme:\s*dark;/);
+  assert.match(tokens, /:root\[data-theme="light"\]\s*\{\s*color-scheme:\s*light;/);
+  assert.match(tokens, /:root\s*\{[^}]*--color-background:\s*#151515/);
+  assert.match(tokens, /:root\s*\{[^}]*--color-text:\s*var\(--color-white\)/);
+  assert.match(layout, /data-theme="dark"/);
+  assert.match(shell, /className="theme-toggle"/);
 });
 
 test('site CSS uses semantic theme roles, not raw colors or legacy ink-paper tokens', () => {
@@ -204,8 +204,8 @@ test('centered Hero composition preserves approved copy and passive 3D motion', 
   const css = read('src/styles/sections.css');
   assert.match(home, /className="wrapper hero hero-centered"/);
   assert.match(home, /<DiceViewer config=\{heroConfig\} continuous \/>/);
-  assert.match(home, />Заголовок<\/h1>/);
-  assert.match(home, /Здесь появится рассказ о кубиках и возможностях конструктора/);
+  assert.match(home, />Магазин авторских кубов\s*<\/h1>/);
+  assert.match(home, /Хотите вдохнуть жизнь в ваше приключение/);
   assert.match(home, />Создать случайный кубик<\/span>/);
   assert.match(css, /\.hero-centered \.hero-object\s*\{[^}]*position:\s*absolute;/);
   assert.match(css, /\.hero-centered \.hero-copy\s*\{[^}]*align-items:\s*center;/);

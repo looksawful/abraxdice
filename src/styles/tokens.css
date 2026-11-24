@@ -2,8 +2,8 @@
    until a consumer provides them, with local fallbacks in patterns.css. */
 @layer theme {
   :root {
-    /* Light is the default; header control stores the user's preference. */
-    color-scheme: light;
+    /* Dark is the default; the root attribute stores the selected theme. */
+    color-scheme: dark;
     /* Contrast primitives stay black and white; surfaces use neutral gray. */
     --color-black: #000000;
     --color-white: #ffffff;
@@ -31,7 +31,7 @@
     --gutter: clamp(1.25rem, 3.5vw, 4.5rem);
     --content-max: 80rem;
     --collection-max: 72rem;
-    --header-height: 5.25rem;
+    --header-height: 6rem;
     --measure: 62ch;
 
     /* Material 3-inspired corners, deliberately limited to four useful steps. */
@@ -45,28 +45,27 @@
     --space-3: 1.5rem;
     --space-4: clamp(1.5rem, 3vw, 3.5rem);
     --space-5: clamp(3rem, 5.5vw, 6rem);
+
+    /* Semantic theme roles are inherited by the entire document. */
+    --color-background: #151515;
+    --color-text: var(--color-white);
+    --color-surface: #202020;
+    --color-border: rgb(255 255 255 / 0.16);
+    --color-control-border: color-mix(in srgb, var(--color-text) 50%, var(--color-background));
+    --shadow-card: 0 8px 24px rgb(0 0 0 / 0.12);
+    --color-hover: color-mix(in srgb, var(--color-text) 8%, var(--color-background));
+    --color-action: var(--color-text);
+    --color-on-action: var(--color-background);
+    --color-focus: var(--color-text);
+    --border-default: 1px solid var(--color-border);
   }
-  /* Resolve related values on the themed element, not on :root.
-     Inherited custom properties are computed before a nested theme overrides them. */
-  .site {
+  :root[data-theme="light"] {
     color-scheme: light;
     --color-background: #fafafa;
     --color-text: var(--color-black);
     --color-surface: #ffffff;
     --color-border: rgb(0 0 0 / 0.14);
     --shadow-card: 0 8px 24px rgb(0 0 0 / 0.035);
-    --color-action: var(--color-text);
-    --color-on-action: var(--color-background);
-    --color-focus: var(--color-text);
-    --border-default: 1px solid var(--color-border);
-  }
-  .site[data-theme="dark"] {
-    color-scheme: dark;
-    --color-background: #151515;
-    --color-text: var(--color-white);
-    --color-surface: #202020;
-    --color-border: rgb(255 255 255 / 0.16);
-    --shadow-card: 0 8px 24px rgb(0 0 0 / 0.12);
   }
 
 }

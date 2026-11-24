@@ -105,7 +105,7 @@
     justify-items: center;
     gap: 0.25rem;
     padding: 0.5rem;
-    border: var(--border-default);
+    border: 1px solid var(--color-control-border);
     border-radius: var(--radius-sm);
     font-variant-numeric: tabular-nums;
   }
@@ -125,7 +125,7 @@
   .swatch {
     inline-size: 2.75rem;
     block-size: 2.75rem;
-    border: var(--border-default);
+    border: 1px solid var(--color-control-border);
     border-radius: var(--radius-full);
   }
   .color-options button[aria-pressed="true"] .swatch {
@@ -146,7 +146,7 @@
     display: grid;
     place-items: center;
     block-size: 2.75rem;
-    border: var(--border-default);
+    border: 1px solid var(--color-control-border);
     border-radius: var(--radius-full);
     color: inherit;
     background: transparent;
@@ -204,7 +204,7 @@
   .cart-entry-actions { --stack-space: 0.75rem; flex-direction: row; flex-wrap: wrap; align-items: center; }
   .cart-remove { --cluster-gap: 0.4rem; }
   .quantity { --cluster-gap: 0.5rem; flex-wrap: nowrap; white-space: nowrap; }
-  .quantity button { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; border: var(--border-default); border-radius: var(--radius-full); }
+  .quantity button { display: grid; place-items: center; min-inline-size: 2.75rem; min-block-size: 2.75rem; border: 1px solid var(--color-control-border); border-radius: var(--radius-full); }
   .text-action { align-self: start; min-block-size: 2.75rem; padding: 0; background: none; border: none; font-size: var(--fs-small); line-height: var(--lh-small); text-decoration: underline; text-underline-offset: 0.3em; }
   .empty-state { --stack-space: 1rem; align-items: flex-start; min-block-size: 20rem; border: var(--border-default); border-radius: var(--radius-lg); padding: clamp(1.5rem, 5vw, 4rem); }
   .empty-state h2 { font-size: var(--fs-heading); }
@@ -214,6 +214,10 @@
   .cart-summary p { color: var(--color-text); opacity: 0.75; }
   .cart-summary .cart-total { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; opacity: 1; }
   .cart-summary a:not(.button) { text-decoration: underline; text-underline-offset: 0.25em; }
+  .cart-consent { display: grid; gap: var(--space-1); font-size: var(--fs-small); }
+  .cart-consent label { display: flex; align-items: flex-start; gap: var(--space-1); cursor: pointer; }
+  .cart-consent input { flex: none; inline-size: 1.25rem; block-size: 1.25rem; margin: 0.15rem 0 0; accent-color: var(--color-text); }
+  .cart-summary button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
   .section-title { font-size: var(--fs-heading); line-height: var(--lh-heading); letter-spacing: var(--tracking-heading); font-weight: 800; text-wrap: balance; }
   .section-button { align-self: start; }
@@ -426,7 +430,7 @@
   }
   .product-detail-photo-trigger:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
   .product-detail-thumbs { margin-block-start: 1rem; --cluster-gap: 0.8rem; }
-  .product-detail-thumbs button { display: inline-flex; align-items: center; gap: 0.6rem; min-block-size: 3.5rem; border: var(--border-default); border-radius: var(--radius-md); padding: 0.4rem; background: var(--color-background); color: var(--color-text); font-size: var(--fs-small); }
+  .product-detail-thumbs button { display: inline-flex; align-items: center; gap: 0.6rem; min-block-size: 3.5rem; border: 1px solid var(--color-control-border); border-radius: var(--radius-md); padding: 0.4rem; background: var(--color-background); color: var(--color-text); font-size: var(--fs-small); }
   .product-detail-thumbs button[aria-pressed=true] { outline: 2px solid var(--color-text); outline-offset: 2px; }
   .product-detail-thumbs img { inline-size: 3rem; block-size: 3rem; object-fit: cover; border-radius: var(--radius-sm); }
   .product-detail-content { --stack-space: 1.25rem; }
@@ -459,7 +463,7 @@
     inline-size: 100%;
     min-inline-size: 0;
     min-block-size: 2.9rem;
-    border: var(--border-default);
+    border: 1px solid var(--color-control-border);
     border-radius: var(--radius-sm);
     background: var(--color-surface);
     color: var(--color-text);

@@ -1,5 +1,7 @@
 'use client';
 
+import { readBrandStorage } from '@/lib/browserStorage';
+
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { CART_KEY, addCartItem, changeQuantity, readCart } from '@/lib/orders';
@@ -24,7 +26,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const itemsRef = useRef<CartItem[]>([]);
   const commit = (next: CartItem[]) => { itemsRef.current = next; setItems(next); };
   useEffect(() => {
-    try { commit(readCart(localStorage.getItem(CART_KEY))); } catch { /* Browser storage is optional. */ }
+    try { commit(readCart(readBrandStorage(CART_KEY))); } catch { /* Browser storage is optional. */ }
     setLoaded(true);
   }, []);
   useEffect(() => {

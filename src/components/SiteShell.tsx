@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
+import { Moon, ShoppingBag, Sun } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { CartProvider, useCart } from './CartState';
+import CookieBanner from './CookieBanner';
 
 const menuLinks = [
   { href: '/', label: 'Главная', desktopOnly: true },
@@ -84,15 +85,25 @@ function SiteChrome({ children }: { children: ReactNode }) {
   const navigation = menuLinks.map(({ href, label, desktopOnly }) =>
     <Link key={href} href={href} className={desktopOnly ? "nav-desktop-only" : undefined} aria-current={path === href ? 'page' : undefined}>{label}</Link>
   );
-  return <div className="site" data-theme="light">
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    try { localStorage.setItem('abraxdice:theme', next); } catch { /* Storage can be unavailable. */ }
+  }
+  return <div className="site">
     <header className={revealed ? "topbar topbar-visible" : "topbar"}>
       <div className="wrapper topbar-inner cluster">
         <Link href={"/"} className="logo" aria-label="На главную">
-          <img className="logo-mark" src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/brand/rollform-logo.svg`} width={45} height={48} alt="" />
-          <span className="logo-word">Логотип</span>
+          <img className="logo-mark" src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/brand/abraxdice-logo.svg`} width={45} height={48} alt="" />
+          <span className="logo-word">abraxdice</span>
         </Link>
         <nav className="nav cluster desktop-nav" aria-label="Основное меню">{navigation}</nav>
         <div className="header-actions cluster">
+          <button className="theme-toggle" type="button" aria-label="Переключить цветовую тему" onClick={toggleTheme}>
+            <Sun className="icon theme-icon-sun" aria-hidden="true" />
+            <Moon className="icon theme-icon-moon" aria-hidden="true" />
+          </button>
           <Link href={"/cart"} className="cart-shortcut" aria-label={'Корзина, товаров: ' + count}
             aria-current={path === '/cart' ? 'page' : undefined}>
             <ShoppingBag className="icon" aria-hidden="true" />
@@ -112,6 +123,8 @@ function SiteChrome({ children }: { children: ReactNode }) {
           <Link href={"/#about"}>О нас</Link>
           <Link href={"/production"}>Изготовление и доставка</Link>
           <Link href="/terms">Пользовательское соглашение</Link>
+          <Link href="/cookies">Политика использования cookies</Link>
+          <Link href="/consent">Согласие на обработку данных</Link>
         </nav>
         <div className="stack">
           <h2>Контакты</h2>
@@ -127,6 +140,7 @@ function SiteChrome({ children }: { children: ReactNode }) {
         <p>Демонстрационный прототип. Данные продавца и контакты временные; заявки и оплата не принимаются.</p>
       </div>
     </footer>
+    <CookieBanner />
   </div>;
 }
 

@@ -57,7 +57,7 @@ export function configFromParams(params: Pick<URLSearchParams, 'get'>): DiceConf
   };
 }
 
-export const LAST_DICE_KEY = 'rollform:last-config:v1';
+export const LAST_DICE_KEY = 'abraxdice:last-config:v1';
 
 export function diceQuery(config: DiceConfig): string {
   return new URLSearchParams({
